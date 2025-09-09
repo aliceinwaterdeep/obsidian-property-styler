@@ -1,12 +1,12 @@
 import { Plugin } from "obsidian";
 import { PluginSettings } from "./types/plugin";
 import { DEFAULT_SETTINGS } from "./config/defaultSettings";
-import { PropertyDetectionService } from "./services/PropertyDetectionService";
+import { PropertyProcessor } from "./services/PropertyProcessor";
 import { SettingsTab } from "./views/settings/SettingsTab";
 
 export default class PropertyStylerPlugin extends Plugin {
 	settings: PluginSettings;
-	private propertyDetector: PropertyDetectionService;
+	private propertyProcessor: PropertyProcessor;
 	private observer: MutationObserver | null = null;
 	private debounceTimer: NodeJS.Timeout | null = null;
 
@@ -16,7 +16,7 @@ export default class PropertyStylerPlugin extends Plugin {
 		await this.loadSettings();
 
 		// initialize services
-		this.propertyDetector = new PropertyDetectionService();
+		this.propertyProcessor = new PropertyProcessor();
 
 		//  observers to detect when Bases views are loaded
 		this.app.workspace.onLayoutReady(() => this.runDetection());
@@ -73,8 +73,9 @@ export default class PropertyStylerPlugin extends Plugin {
 	runDetection() {
 		// only run detection if in a Bases view
 		if (document.querySelector("[data-type='bases']")) {
-			this.propertyDetector.detectAndLogProperties();
-			const detectedNames = this.propertyDetector.getDetectedPropertyNames();
+			const detectedNames = this.propertyProcessor.processProperties(
+				this.settings
+			);
 			this.updateDetectedProperties(detectedNames);
 		}
 	}

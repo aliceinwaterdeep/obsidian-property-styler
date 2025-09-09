@@ -1,5 +1,6 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import PropertyStylerPlugin from "../../main";
+import { PropertyMode } from "src/types/plugin";
 
 export class SettingsTab extends PluginSettingTab {
 	plugin: PropertyStylerPlugin;
@@ -31,7 +32,13 @@ export class SettingsTab extends PluginSettingTab {
 						.addOption("custom", "Custom")
 						.setValue(config?.mode || "off")
 						.onChange(async (value) => {
-							this.plugin.settings.properties[propertyName].mode = value as any;
+							if (!this.plugin.settings.properties[propertyName]) {
+								this.plugin.settings.properties[propertyName] = { mode: "off" };
+							}
+							const propertyConfig =
+								this.plugin.settings.properties[propertyName];
+
+							propertyConfig.mode = value as PropertyMode;
 							await this.plugin.saveSettings();
 						});
 				});
