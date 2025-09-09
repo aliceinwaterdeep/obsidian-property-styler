@@ -2,6 +2,7 @@ import { Plugin } from "obsidian";
 import { PluginSettings } from "./types/plugin";
 import { DEFAULT_SETTINGS } from "./config/defaultSettings";
 import { PropertyDetectionService } from "./services/PropertyDetectionService";
+import { SettingsTab } from "./views/settings/SettingsTab";
 
 export default class PropertyStylerPlugin extends Plugin {
 	settings: PluginSettings;
@@ -31,6 +32,8 @@ export default class PropertyStylerPlugin extends Plugin {
 		);
 
 		this.setupMutationObserver();
+
+		this.addSettingTab(new SettingsTab(this.app, this));
 	}
 
 	onunload() {
@@ -71,6 +74,38 @@ export default class PropertyStylerPlugin extends Plugin {
 		// only run detection if in a Bases view
 		if (document.querySelector("[data-type='bases']")) {
 			this.propertyDetector.detectAndLogProperties();
+			const detectedNames = this.propertyDetector.getDetectedPropertyNames();
+			this.updateDetectedProperties(detectedNames);
+		}
+	}
+
+	private updateDetectedProperties(detectedNames: string[]) {
+		const currentDetected = new Set(this.settings.detectedProperties);
+
+		// Check if there are any new properties
+		const hasNewProperties = detectedNames.some(
+			(name) => !currentDetected.has(name)
+		);
+
+		if (hasNewProperties) {
+			// Merge new properties with existing ones
+			this.settings.detectedProperties = Array.from(
+				new Set([...this.settings.detectedProperties, ...detectedNames])
+			).sort();
+
+			// Create default PropertyConfig for new properties
+			detectedNames.forEach((propertyName) => {
+				if (!this.settings.properties[propertyName]) {
+					this.settings.properties[propertyName] = { mode: "off" };
+				}
+			});
+
+			this.saveSettings();
+			console.log(
+				"Updated detected properties:",
+				this.settings.detectedProperties
+			);
+			console.log("Property configs:", Object.keys(this.settings.properties));
 		}
 	}
 }
