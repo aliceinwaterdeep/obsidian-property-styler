@@ -1,11 +1,10 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "property-styler",
+	"name": "Property Styler",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"description": "Style properties in your notes.",
+	"author": "aliceinwaterdeep",
+	"authorUrl": "https://github.com/aliceinwaterdeep",
 	"isDesktopOnly": false
 }

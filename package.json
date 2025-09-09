@@ -1,16 +1,18 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "obsidian-property-styler",
 	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"description": "Style properties in your notes.",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-		"version": "node version-bump.mjs && git add manifest.json versions.json"
+		"version": "node version-bump.mjs && git add manifest.json versions.json",
+		"test": "jest",
+		"test:watch": "jest --watch"
 	},
 	"keywords": [],
-	"author": "",
-	"license": "MIT",
+	"author": "aliceinwaterdeep",
+	"license": "GPL-3.0-only",
 	"devDependencies": {
 		"@types/node": "^16.11.6",
 		"@typescript-eslint/eslint-plugin": "5.29.0",
